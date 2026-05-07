@@ -1,22 +1,22 @@
 steps:
-  # Build frontend image
+  # Build backend image
   - name: "gcr.io/cloud-builders/docker"
     args:
       [
         "build",
         "--build-arg",
-        "REACT_APP_API_URL=${_APP_URL}",
+        "FRONTEND=${_FRONTEND}",
         "-t",
-        "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_FRONTEND_SERVICE_NAME}",
+        "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_BACKEND_SERVICE_NAME}",
         ".",
       ]
  
-  # Push frontend image to artifact registry
+  # Push backend image to artifact registry
   - name: "gcr.io/cloud-builders/docker"
     args:
       [
         "push",
-        "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_FRONTEND_SERVICE_NAME}",
+        "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_BACKEND_SERVICE_NAME}",
       ]
  
   # Deploy
@@ -26,17 +26,18 @@ steps:
       [
         "run",
         "deploy",
-        "${_FRONTEND_SERVICE_NAME}",
-        "--image=${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_FRONTEND_SERVICE_NAME}",
+        "${_BACKEND_SERVICE_NAME}",
+        "--image=${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_BACKEND_SERVICE_NAME}",
         "--region=${LOCATION}",
         "--allow-unauthenticated",
+        "--set-env-vars=FRONTEND=${_FRONTEND}"
       ]
  
 images:
-  - ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_FRONTEND_SERVICE_NAME}
+  - ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_BACKEND_SERVICE_NAME}
  
 substitutions:
-  _FRONTEND_SERVICE_NAME: g3-frontend
+  _BACKEND_SERVICE_NAME: g3-backend  
  
 options:
   logging: CLOUD_LOGGING_ONLY
