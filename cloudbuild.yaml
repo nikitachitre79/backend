@@ -1,0 +1,42 @@
+steps:
+  # Build frontend image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--build-arg",
+        "REACT_APP_API_URL=${_APP_URL}",
+        "-t",
+        "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_FRONTEND_SERVICE_NAME}",
+        ".",
+      ]
+ 
+  # Push frontend image to artifact registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_FRONTEND_SERVICE_NAME}",
+      ]
+ 
+  # Deploy
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      [
+        "run",
+        "deploy",
+        "${_FRONTEND_SERVICE_NAME}",
+        "--image=${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_FRONTEND_SERVICE_NAME}",
+        "--region=${LOCATION}",
+        "--allow-unauthenticated",
+      ]
+ 
+images:
+  - ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_FRONTEND_SERVICE_NAME}
+ 
+substitutions:
+  _FRONTEND_SERVICE_NAME: g3-frontend
+ 
+options:
+  logging: CLOUD_LOGGING_ONLY
