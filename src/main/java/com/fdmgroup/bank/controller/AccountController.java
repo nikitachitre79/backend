@@ -48,7 +48,7 @@ public class AccountController
 	@GetMapping
 	public ResponseEntity<List<AccountDTO>> getAccounts()
 	{
-		System.out.println("Account Controller: Fetching all accounts test");
+		System.out.println("Account Controller: Fetching all accounts");
 		List<AccountDTO> accounts = service.getAccounts().stream().map(AccountDTO::new).toList();
 		return ResponseEntity.ok(accounts);
 	}
