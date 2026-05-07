@@ -37,7 +37,7 @@ images:
   - ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_BACKEND_SERVICE_NAME}
  
 substitutions:
-  _BACKEND_SERVICE_NAME: g3-backend  
+  _BACKEND_SERVICE_NAME: coach-backend  
  
 options:
   logging: CLOUD_LOGGING_ONLY
